@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <link rel="stylesheet" type="text/css" href="css/index.css" />
+        <title>Color Shades</title>
+		<script>
+			
+			function capitaliseFirstLetter(string)
+			{
+				return string.charAt(0).toUpperCase() + string.slice(1);
+			}
+		
+			function preventBehavior(e)
+			{
+				e.preventDefault();
+			};
+			
+			function funShowItem(inc_element_id){
+				document.getElementById(inc_element_id).style.visibility = "visible";
+				document.getElementById(inc_element_id).style.display = "block";
+			}
+			
+			function funHideItem(inc_element_id){
+				document.getElementById(inc_element_id).style.visibility = "hidden";
+				document.getElementById(inc_element_id).style.display = "none";
+			}
+			
+			function randint( l, u )
+			// Returns an integer uniformly distributed over l..u.
+			{
+				return l + Math.floor( Math.random() * ( u + 1 - l ));
+			}
+			
+			function generate( )
+			{
+				var minval = 0;
+				var maxval = 9;
+				
+				
+				var a = new Array( maxval - minval + 1 );
+				
+				
+				for ( var i = 0, j = minval; j <= maxval; i++, j++ )
+				{
+					a[i] = j;
+				}
+				
+				
+				for ( var i = a.length - 1; i > 0; i-- )
+				{
+					var j = randint( 0, i );
+					
+					// Swap the elements at positions i and j.
+					var temp = a[i];
+					a[i] = a[j];
+					a[j] = temp;
+				}
+				
+				for ( var i = 0; i < a.length; i++ )
+				{
+					arrCityRandom[i] = arrCityNames[a[i]];
+				}
+				
+			}
+			
+			var arrCityRandom = new Array(10);
+			var arrCityAnswers = new Array(10);
+			var arrCityNames = ["Brown",
+								"Red Brown",
+								"Sandy Brown",
+								"Peru",
+								"Wood Brown",
+								"Rosy Brown",
+								"Beaver",
+								"Chestnut",
+								"Smokey Topaz",
+								"Russet"
+							 ];
+			var arrCityClean = ["Brown",
+								"RedBrown",
+								"SandyBrown",
+								"Peru",
+								"WoodBrown",
+								"RosyBrown",
+								"Beaver",
+								"Chestnut",
+								"SmokeyTopaz",
+								"Russet"
+								];
+			
+			var arrCityColors=[
+							   "#964B00",
+							   "#A52A2A",
+							   "#F4A460",
+							   "#CD853F",
+							   "#C19A6B",
+							   "#BC8F8F",
+							   "#9F8170",
+							   "#954535",
+							   "#832A0D",
+							   "#80461B"
+							  ];
+			 
+			var arrCityLefts=["34",
+							  "232",
+							  "430",
+							  "628",
+							  "826",
+							  "34",
+							  "232",
+							  "430",
+							  "628",
+							  "826"
+							  ];
+			
+			var arrCityTops=["154",
+							 "154",
+							 "154",
+							 "154",
+							 "154",
+							 "380",
+							 "380",
+							 "380",
+							 "380",
+							 "380"
+							 ];
+			
+			function funStart(){
+				for (var i=0;i<arrCityNames.length;i++)
+				{
+					divCity = document.createElement("div");
+					divCity.setAttribute("id","div_city_" + arrCityClean[i]);
+					divCity.setAttribute("class","div_city");
+					divCity.style.left = arrCityLefts[i] + "px";
+					divCity.style.top = arrCityTops[i] + "px";
+					divCity.style.background = arrCityColors[i];
+					document.getElementById("div_container").appendChild(divCity);
+					document.getElementById("div_city_" + arrCityClean[i]).addEventListener('touchstart', funCityTap, false);
+				}
+			}
+			
+			function funCityCleanToDirty(inc_clean){
+				strCityDirty = "";
+				for (var i=0;i<arrCityClean.length;i++)
+				{
+					if(arrCityClean[i] == inc_clean){
+						strCityDirty = arrCityNames[i];
+					}
+				}
+				return strCityDirty;
+			}
+			
+			function funCityDirtyToClean(inc_dirty){
+				strCityClean = "";
+				for (var i=0;i<arrCityNames.length;i++)
+				{
+					if(arrCityNames[i] == inc_dirty){
+						strCityClean = arrCityClean[i];
+					}
+				}
+				return strCityClean;
+			}
+			
+			function funCityTap(e){
+				if((intActiveGame == 1) && (document.getElementById(e.target.id).className != "div_city_blue")){
+					strCityTapped = e.target.id;
+					document.getElementById(e.target.id).className = "div_city_blue";
+					strCityTapped = strCityTapped.replace("div_city_","");
+					strCityTapped = funCityCleanToDirty(strCityTapped);
+					arrCityAnswers[intCurrentQuestion] = strCityTapped;
+					intCurrentQuestion = intCurrentQuestion + 1;
+					funShowQuestion();
+				}
+				if(intLearnMode == 1){
+					for (var i=0;i<arrCityClean.length;i++)
+					{
+						document.getElementById("div_city_" + arrCityClean[i]).className = "div_city";
+						
+					}
+					strCityTapped = e.target.id;
+					strCityTapped = strCityTapped.replace("div_city_","");
+					strCityTapped = funCityCleanToDirty(strCityTapped);
+					document.getElementById("div_prompt").innerHTML = strCityTapped;
+					document.getElementById(e.target.id).className = "div_city_blue";
+					tempSoundFile = strCityTapped.toLowerCase() + ".aiff";
+					tempSoundFile = tempSoundFile.replace(" ","");
+					mp3Audio = new Media(tempSoundFile, funSuccess, funError);
+                    mp3Audio.play();
+				}
+			}
+			
+			function funSuccess(){
+				//
+			}
+			
+			function funError(){
+				//
+			}
+			
+			function funHome(){
+				intLearnMode = 0;
+				intActiveGame = 0;
+				intCurrentQuestion = 0;
+				intAnswersCorrect = 0;
+				funHideItem("div_prompt");
+				funHideItem("div_quit_button");
+				funHideItem("div_home_button");
+				funHideItem("div_results");
+				funShowItem("div_start_button");
+				funShowItem("div_learn_button");
+				for (var i=0;i<arrCityClean.length;i++)
+				{
+					document.getElementById("div_city_" + arrCityClean[i]).className = "div_city";
+					
+				}
+			}
+			
+			
+			function funStartGame(){
+				funHideItem("div_learn_button");
+				funHideItem("div_start_button");
+				funShowItem("div_prompt");
+				funShowItem("div_quit_button");
+				intActiveGame = 1;
+				intCurrentQuestion = 0;
+				generate();
+				funShowQuestion();
+			}
+			
+			function funShowQuestion(){
+				if(intCurrentQuestion < 10){
+					document.getElementById("div_prompt").innerHTML = "Tap " + arrCityRandom[intCurrentQuestion];
+					
+					strNextSound = arrCityRandom[intCurrentQuestion].toLowerCase() + ".aiff";
+					strNextSound = strNextSound.replace(" ","");
+					
+					tempTapFile = "tap.aiff";
+					mp3Tap = new Media(tempTapFile, function(){
+									   mp3Audio = new Media(strNextSound, funSuccess, funError);
+									   mp3Audio.play();
+									   }, funError);
+                    mp3Tap.play();
+                    
+				}else{
+					funGameOver();
+				}
+			}
+			
+			var strNextSound = "";
+			
+			function funGameOver(){
+				intActiveGame = 0;
+				intCurrentQuestion = 0;
+				intAnswersCorrect = 0;
+				for (var i=0;i<arrCityNames.length;i++)
+				{
+					tempCity = funCityDirtyToClean(arrCityRandom[i]);
+					if(arrCityRandom[i] == arrCityAnswers[i]){
+						intAnswersCorrect++;
+						document.getElementById("div_city_" + tempCity).className = "div_city_green";
+					}else{
+						document.getElementById("div_city_" + tempCity).className = "div_city_red";
+					}
+					
+				}
+				
+				intScore = Math.round(intAnswersCorrect * 10);
+				
+				funHideItem("div_prompt");
+				funHideItem("div_quit_button");
+				document.getElementById("div_results").innerHTML = "Your Score: " + intScore.toString() + "%";
+				funShowItem("div_results");
+				funShowItem("div_home_button");
+			}
+			
+			function funLearn(){
+				intLearnMode = 1;
+				funHideItem("div_learn_button");
+				funHideItem("div_start_button");
+				funShowItem("div_prompt");
+				document.getElementById("div_prompt").innerHTML = "Tap a Shade"
+				funShowItem("div_home_button");
+			}
+			
+			
+			function funWhiteLaunch(){
+				document.location.href = "index.html";
+			}
+			
+			function funPinkLaunch(){
+				document.location.href = "pink.html";
+			}
+			
+			function funRedLaunch(){
+				document.location.href = "red.html";
+			}
+			
+			function funOrangeLaunch(){
+				document.location.href = "orange.html";
+			}
+			
+			function funBrownLaunch(){
+				document.location.href = "brown.html";
+			}
+			
+			function funYellowLaunch(){
+				document.location.href = "yellow.html";
+			}
+			
+			function funGrayLaunch(){
+				document.location.href = "gray.html";
+			}
+			
+			function funGreenLaunch(){
+				document.location.href = "green.html";
+			}
+			
+			function funCyanLaunch(){
+				document.location.href = "cyan.html";
+			}
+			
+			function funBlueLaunch(){
+				document.location.href = "blue.html";
+			}
+			
+			function funVioletLaunch(){
+				document.location.href = "violet.html";
+			}
+			
+			function funBlackLaunch(){
+				document.location.href = "black.html";
+			}
+			
+			var intLearnMode = 0;
+			var intActiveGame = 0;
+			var intCurrentQuestion = 0;
+			var intAnswersCorrect = 0;
+			
+		</script>
+		<style>
+			body, div, img{
+				margin: 0px;
+				padding: 0px;
+				
+			}
+			#div_container{
+				background: url('img/background.png');
+				background-size: 100%;
+				width: 1024px;
+				height: 748px;
+			}
+			#div_white_button{
+				width: 172px;
+				height: 60px;
+				position: absolute;
+				top: 0px;
+				left: 0px;
+				background: #A1A1A1;
+				font-family: Verdana;
+				text-align: center;
+				color: #000000;
+				font-size: 40px;
+			}
+			#div_pink_button{
+				width: 170px;
+				height: 60px;
+				position: absolute;
+				top: 0px;
+				left: 172px;
+				background: #A1A1A1;
+				font-family: Verdana;
+				text-align: center;
+				color: #000000;
+				font-size: 40px;
+			}
+			#div_red_button{
+				width: 170px;
+				height: 60px;
+				position: absolute;
+				top: 0px;
+				left: 342px;
+				background: #A1A1A1;
+				font-family: Verdana;
+				text-align: center;
+				color: #000000;
+				font-size: 40px;
+			}
+			#div_orange_button{
+				width: 170px;
+				height: 60px;
+				position: absolute;
+				top: 0px;
+				left: 512px;
+				background: #A1A1A1;
+				font-family: Verdana;
+				text-align: center;
+				color: #000000;
+				font-size: 40px;
+			}
+			#div_brown_button{
+				width: 170px;
+				height: 60px;
+				position: absolute;
+				top: 0px;
+				left: 682px;
+				background: #535353;
+				font-family: Verdana;
+				text-align: center;
+				color: #FFFFFF;
+				font-size: 40px;
+			}
+			#div_yellow_button{
+				width: 172px;
+				height: 60px;
+				position: absolute;
+				top: 0px;
+				left: 852px;
+				background: #A1A1A1;
+				font-family: Verdana;
+				text-align: center;
+				color: #000000;
+				font-size: 40px;
+			}
+			#div_gray_button{
+				width: 172px;
+				height: 60px;
+				position: absolute;
+				top: 60px;
+				left: 0px;
+				background: #A1A1A1;
+				font-family: Verdana;
+				text-align: center;
+				color: #000000;
+				font-size: 40px;
+			}
+			#div_green_button{
+				width: 170px;
+				height: 60px;
+				position: absolute;
+				top: 60px;
+				left: 172px;
+				background: #A1A1A1;
+				font-family: Verdana;
+				text-align: center;
+				color: #000000;
+				font-size: 40px;
+			}
+			#div_cyan_button{
+				width: 170px;
+				height: 60px;
+				position: absolute;
+				top: 60px;
+				left: 342px;
+				background: #A1A1A1;
+				font-family: Verdana;
+				text-align: center;
+				color: #000000;
+				font-size: 40px;
+			}
+			#div_blue_button{
+				width: 170px;
+				height: 60px;
+				position: absolute;
+				top: 60px;
+				left: 512px;
+				background: #A1A1A1;
+				font-family: Verdana;
+				text-align: center;
+				color: #000000;
+				font-size: 40px;
+			}
+			#div_violet_button{
+				width: 170px;
+				height: 60px;
+				position: absolute;
+				top: 60px;
+				left: 682px;
+				background: #A1A1A1;
+				font-family: Verdana;
+				text-align: center;
+				color: #000000;
+				font-size: 40px;
+			}
+			#div_black_button{
+				width: 172px;
+				height: 60px;
+				position: absolute;
+				top: 60px;
+				left: 852px;
+				background: #A1A1A1;
+				font-family: Verdana;
+				text-align: center;
+				color: #000000;
+				font-size: 40px;
+			}
+			
+			#div_start_button{
+				background: url('img/start.png');
+				background-size: 100%;
+				width: 210px;
+				height: 118px;
+				position: absolute;
+				top: 630px;
+				left: 602px;
+			}
+			#div_learn_button{
+				background: url('img/learn.png');
+				background-size: 100%;
+				width: 210px;
+				height: 118px;
+				position: absolute;
+				top: 630px;
+				left: 202px;
+			}
+			#div_home_button{
+				background: url('img/home.png');
+				background-size: 100%;
+				width: 210px;
+				height: 118px;
+				position: absolute;
+				top: 630px;
+				left: 702px;
+				visibility: hidden;
+				display: none;
+			}
+			#div_quit_button{
+				background: url('img/quit.png');
+				background-size: 100%;
+				width: 210px;
+				height: 118px;
+				position: absolute;
+				top: 630px;
+				left: 702px;
+				visibility: hidden;
+				display: none;
+			}
+			#div_prompt{
+				width: 620px;
+				height: 110px;
+				position: absolute;
+				top: 610px;
+				left: 7px;
+				padding: 20px;
+				visibility: hidden;
+				display: none;
+				text-align: center;
+				font-size: 64px;
+				font-family: Verdana;
+				color: #000;
+			}
+			#div_results{
+				width: 620px;
+				height: 110px;
+				position: absolute;
+				top: 610px;
+				left: 70px;
+				padding: 20px;
+				visibility: hidden;
+				display: none;
+				text-align: left;
+				font-size: 64px;
+				font-family: Verdana;
+				color: #000;
+			}
+			.div_city, .div_city_blue, .div_city_green, .div_city_red, .div_city_tapped{
+				width: 156px;
+				height: 184px;
+				position: absolute;
+				border: 4px solid #000000;
+			}
+			.div_city_blue{
+				border: 4px solid #0000FF;
+			}
+			.div_city_green{
+				border: 4px solid #00FF00;
+				-webkit-animation-name: keyCorrect;
+				-webkit-animation-duration: 2s;
+				-webkit-animation-iteration-count: 2;
+				-webkit-animation-direction: alternate;
+			}
+			.div_city_red{
+				border: 4px solid #FF0000;
+			}
+			.div_city_tapped{
+				border: 4px solid #0000FF;
+			}
+			
+			#div_preload{
+				position: absolute;
+				left: -10000px;
+				top: -10000px;
+			}
+			
+			@-webkit-keyframes keyCorrect {
+				0% {
+					-webkit-transform: rotate(0deg);
+				}
+				25% {
+					-webkit-transform: rotate(90deg);
+				}
+				50% {
+					-webkit-transform: rotate(180deg);
+				}
+				75% {
+					-webkit-transform: rotate(90deg);
+				}
+				100% {
+					-webkit-transform: rotate(0deg);
+				}
+				
+			}
+			
+			
+		</style>
+
+    </head>
+    <body>
+		<div id="div_container">
+			<div id="div_white_button">White</div>
+			<div id="div_pink_button">Pink</div>
+			<div id="div_red_button">Red</div>
+			<div id="div_orange_button">Orange</div>
+			<div id="div_brown_button">Brown</div>
+			<div id="div_yellow_button">Yellow</div>
+			<div id="div_gray_button">Gray</div>
+			<div id="div_green_button">Green</div>
+			<div id="div_cyan_button">Cyan</div>
+			<div id="div_blue_button">Blue</div>
+			<div id="div_violet_button">Violet</div>
+			<div id="div_black_button">Black</div>
+			<div id="div_learn_button"></div>
+			<div id="div_start_button"></div>
+			<div id="div_home_button"></div>
+			<div id="div_quit_button"></div>
+			<div id="div_prompt"></div>
+			<div id="div_results"></div>
+		</div>
+		<div id="div_preload">
+		</div>
+        <script type="text/javascript" src="cordova-2.2.0rc1.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+        <script type="text/javascript">
+            app.initialize();
+        </script>
+    </body>
+</html>
